@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SEV7NSECONDS' LEGACY</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="apps/scripts/style.css">
+        <script src="https://unpkg.com/vue@3"></script>
+    </head>
+    <body>
+        
+        <div id="app">
+            <!-- Phase 1: START SCREEN -->
+            <div id="start-screen" v-if="phase === 'start'">
+                <div class="title-wrapper">
+                    <glitch-display 
+                        :content="introTitle" 
+                        :component-type="'title'"
+                        :scramble-type="'progressive'"
+                        :key="'intro-title-key'"
+                    />
+                </div>
+                
+                <div class="button-wrapper">
+                    <glitch-button-display 
+                        v-if="showButton"
+                        :content="introButtonText" 
+                        @click="startSequence"
+                        :scramble-type="'progressive'"
+                        :key="'intro-button-key'"
+                        :pulse-effect="true"
+                    />
+                </div>
+            </div>
+
+            <!-- Phase 2: VIDEO INTRO (plays once with sound) -->
+            <div 
+                id="video-intro" 
+                v-if="phase === 'video'" 
+                :class="{ 'active': isVideoActive }"
+            >
+                <video 
+                    ref="introVideo"
+                    src="apps/assets/bgvideo/arcane x hvn on earth.mp4" 
+                    @ended="videoEnded"
+                    @timeupdate="videoTimeUpdate"
+                    playsinline 
+                ></video>
+            </div>
+
+            <div 
+                id="glitch-transition" 
+                v-if="phase === 'transition'"
+                :class="{ 'active': isTransitionActive }"
+            >
+                <div class="glitch-overlay"></div>
+            </div>
+
+            <!-- Background Video (loops silently) -->
+            <div 
+                id="video-background" 
+                :class="{ 'active': phase === 'main', 'fading': isChangingVideo }"
+            >
+                <video 
+                    ref="backgroundVideo"
+                    :src="currentVideo"
+                    loop
+                    muted
+                    playsinline 
+                ></video>
+            </div>
+
+            <!-- Phase 3: MAIN SCREEN WITH HERO SECTION -->
+            <div 
+                id="main-content" 
+                :class="{ 'active': phase === 'main' }"
+            > 
+                <!-- HERO SECTION -->
+                <div class="hero-section">
+                    <div class="hero-left">
+                        <div>
+                            <glitch-display 
+                                :content="heroLocation" 
+                                :component-type="'location'"
+                                :scramble-type="'random'"
+                                :interval-time="150"
+                            />
+                        </div>
+                        
+                        <h1 class="hero-title">
+                            <glitch-display 
+                                :content="heroTitle1" 
+                                :component-type="'hero-title'"
+                                :scramble-type="'interval'"
+                                :interval-time="10"
+                            />
+                            <glitch-display 
+                                :content="heroTitle2" 
+                                :component-type="'hero-title'"
+                                :scramble-type="'interval'"
+                                :interval-time="10"
+                            />
+                        </h1>
+                        
+                        <!-- TABS SECTION - FIXED STRUCTURE -->
+                        <div class="tabs">
+                            <div 
+                                v-for="t in tabs" 
+                                :key="t" 
+                                @click="changeTab(t)" 
+                                :class="{ 'tab': true, 'active': activeTab === t }"
+                            >
+                                <template v-if="activeTab !== t">
+                                    <glitch-display 
+                                        :content="t" 
+                                        :component-type="'tab'"
+                                        :scramble-type="'interval'"
+                                        :interval-time="2000"
+                                    />
+                                </template>
+                                <template v-else>
+                                    <span>{{ t }}</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <glitch-display 
+                            :content="currentContent" 
+                            :key="activeTab" 
+                            :component-type="'content'"
+                            :scramble-type="'random'"
+                        />
+                    </div> <!-- Close hero-left -->
+                </div>
+                <div class="hero-section">
+                    <div class="hero-right">
+                        <!-- Home Tab Content -->
+                        <div v-if="activeTab === 'Home'" class="profile-section">
+                            <div>
+                                <glitch-text-paragraph 
+                                    :text="profileText"
+                                    :scramble-interval="150"
+                                    class="hero-description"
+                                />
+                            </div>
+                            
+                            <div class="skills-section">
+                                <h3 class="section-title">
+                                    <glitch-display 
+                                        content="SKILLS & EXPERIENCE"
+                                        :component-type="'section-title'"
+                                        :scramble-type="'progressive'"
+                                    />
+                                </h3>
+                                <div class="skills-grid">
+                                    <div class="skill-category" v-for="category in skills" :key="category.title">
+                                        <h4>{{ category.title }}</h4>
+                                        <div class="skill-items">
+                                            <span v-for="skill in category.items" :key="skill" class="skill-item">
+                                                <glitch-display 
+                                                    :content="skill"
+                                                    :component-type="'skill'"
+                                                    :scramble-type="'interval'"
+                                                    :interval-time="Math.random() * 3000 + 2000"
+                                                />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Portfolio Section -->
+                        <div v-if="activeTab === 'Portfolios'" class="portfolio-section">
+                            <div class="portfolio-categories">
+                                <div 
+                                    v-for="category in portfolioCategories" 
+                                    :key="category"
+                                    @click="setPortfolioCategory(category)"
+                                    :class="{ 'portfolio-category': true, 'active': portfolioCategory === category }"
+                                >
+                                    <glitch-display 
+                                        :content="category"
+                                        :component-type="'portfolio-category'"
+                                        :scramble-type="'interval'"
+                                        :interval-time="2000"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="portfolio-items">
+                                <div 
+                                    v-for="item in currentPortfolioItems" 
+                                    :key="item.id"
+                                    class="portfolio-item"
+                                    :class="{ 'glitching': item.isGlitching }"
+                                    @mouseenter="startPortfolioGlitch(item)"
+                                    @mouseleave="stopPortfolioGlitch(item)"
+                                >
+                                    <div class="portfolio-media">
+                                        <img v-if="portfolioCategory === 'Posters'" :src="item.thumbnail" :alt="item.title" />
+                                        <video v-else :src="item.video" muted loop></video>
+                                    </div>
+                                    <div class="portfolio-info">
+                                        <glitch-display 
+                                            :content="item.title"
+                                            :component-type="'portfolio-title'"
+                                            :scramble-type="'interval'"
+                                            :interval-time="1500"
+                                        />
+                                        <p class="portfolio-description">{{ item.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Section -->
+                        <div v-if="activeTab === 'Contact'" class="contact-section">
+                            <div class="contact-methods">
+                                <div class="contact-method" v-for="method in contactMethods" :key="method.platform">
+                                    <glitch-display 
+                                        :content="method.platform"
+                                        :component-type="'contact-platform'"
+                                        :scramble-type="'interval'"
+                                        :interval-time="2000"
+                                    />
+                                    <span class="contact-handle">{{ method.handle }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="qr-section">
+                                <h4>
+                                    <glitch-display 
+                                        content="SCAN TO CONNECT"
+                                        :component-type="'qr-title'"
+                                        :scramble-type="'interval'"
+                                        :interval-time="3000"
+                                    />
+                                </h4>
+                                <div class="qr-code">
+                                    <img src="apps/assets/Rickrolling_QR_code.png" alt="QR Code" />
+                                    <div class="qr-glitch-overlay"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- Close hero-right -->
+                </div> <!-- Close hero-section -->
+
+                <footer class="main-footer">
+                    <glitch-display 
+                        :content="copyrightText"
+                        :component-type="'footer'"
+                        :scramble-type="'continuous'"
+                    />
+                </footer>
+            </div> <!-- Close main-content -->
+
+            <!-- Audio Elements -->
+            <audio ref="glitchSound1" src="apps/assets/soundfx/glitch-fx-transitions-4-373371.mp3" preload="auto"></audio>
+            <audio ref="glitchSound2" src="apps/assets/soundfx/sfx20-glitch-restart-338384.mp3" preload="auto"></audio>
+            <audio ref="tabChangeSound" src="apps/assets/soundfx/glitch-fx-transitions-6-373367.mp3" preload="auto"></audio>
+            <audio ref="backgroundSound" src="apps/assets/soundfx/computer-humming-236384.mp3" loop preload="auto"></audio>
+            <audio ref="buttonClickSound" src="apps/assets/soundfx/glitch-fx-transitions-5-311806.mp3" preload="auto"></audio>
+        </div>
+
+        <script src="apps/scripts/app.js"></script>
+    </body>
+</html>
