@@ -1,237 +1,83 @@
 # PROJECT SEV7NSECONDS
-#### Video Demo : https://youtu.be/Crs41sXmz6s
-#### Description :
 
-A Cinematic Frontend Portfolio Experience
+#### **Video Demo**: [https://youtu.be/Crs41sXmz6s](https://youtu.be/Crs41sXmz6s)
 
-CS50 Final Project
+## 🎞️ Overview
+**PROJECT SEV7NSECONDS** is a cinematic, frontend-only web project created as a final submission for **CS50x**. 
 
-Overview
+This project redefines the traditional digital portfolio. Instead of a static collection of links, it is designed as an *experience-first* narrative. It targets digital artists and creatives who want to leave a lasting impression by immersing the visitor in a sequence of transitions, glitch aesthetics, and timed reveals. The site behaves more like an interactive film intro than a conventional webpage, using motion and rhythm to guide the user into the creative world of the artist.
 
-PROJECT SEV7NSECONDS is a cinematic, frontend-only web project created as my final submission for CS50.
-Rather than functioning as a traditional website, this project is designed as an experience-first digital portfolio, tailored especially for digital artists and creatives who want to present their work in a memorable and immersive way.
+---
 
-The site behaves more like an animated intro sequence than a conventional webpage. The user is guided through a sequence of transitions, glitch effects, and timed reveals before reaching the main content — much like the opening moments of a film or game.
+## 💡 Project Motivation: The Storytelling Portfolio
+The core motivation was a simple question: *How can a portfolio feel like a story?*
 
-This project runs entirely on the client side, using only HTML, CSS, JavaScript, and Vue.js, with no backend, API, or database involved.
+Standard portfolios often feel like resumes in a browser. For this project, inspiration was drawn heavily from the visual language of **Cyberpunk: Edgerunners**. I wanted to capture the "digital fragility" found in that genre—where UI elements feel unstable, emotional, and alive. 
 
-Project Motivation
+Key influences include:
+* **Intentional Instability**: Using glitches not as technical errors, but as a design language representing memory and digital legacy.
+* **Atmospheric Timing**: Using silence and deliberate delays to build anticipation before a reveal.
+* **Cinematic Pacing**: Forcing the user to slow down and experience the transitions rather than just scrolling past the content.
 
-The core motivation behind this project was a simple question:
+---
 
-How can a portfolio feel like a story, not just a collection of links?
+## 🛠️ Technical Implementation & Logic
+While the project appears visually complex, it is built on a streamlined stack of **HTML5, CSS3, JavaScript, and Vue.js**.
 
-Inspiration was drawn heavily from Cyberpunk: Edgerunners, particularly its use of:
+### 🧩 The Scramble Algorithm
+The "heartbeat" of the project is the text-scrambling logic found in `app.js`. Unlike a simple random string generator, this algorithm works through a progressive "locking" mechanism. 
+1. The script replaces the target text with random symbols from a predefined character set.
+2. It uses an interval to cycle these symbols rapidly.
+3. Gradually, it "resolves" the characters from left to right, locking the correct letters into place until the full string is revealed.
+4. This creates the illusion of a computer system decrypting or recovering corrupted data.
 
-Abrupt transitions
 
-Visual glitches as storytelling tools
 
-Text and UI elements that feel unstable, alive, and emotional
+### 🔄 Vue-Driven Phase Management
+To handle the cinematic flow, I used **Vue.js** via CDN. Vue’s reactive state allows the site to move through different "Phases":
+* **Phase 1 (Start)**: The initial quiet state.
+* **Phase 2 (Intro)**: The trigger of the scramble animations.
+* **Phase 3 (Glitch)**: The peak of visual disruption.
+* **Phase 4 (Main)**: The transition into the portfolio interface.
 
-Silence and timing used as dramatic devices
+By binding classes and visibility to these phases, I ensured that the DOM remains clean and that animations only fire when the user is ready for them.
 
-Rather than treating glitches as errors, this project embraces them as intentional design language, representing themes of identity, memory, and digital legacy.
+### 🎨 CSS Animation Architecture
+The visual "flicker" and "glitch" effects are handled entirely in `style.css` using `@keyframes`. 
+* **The Glitch Effect**: I utilized the `clip-path` property to slice the text into layers, shifting them horizontally at micro-intervals to simulate a scanning error.
+* **The Flicker**: By manipulating opacity levels (e.g., `0.9` to `1.0`) at irregular intervals, I created a "neon light" effect that prevents the site from feeling static.
 
-This approach fits naturally with the idea of a digital artist portfolio, where atmosphere and emotion are just as important as content.
 
-Concept: A Portfolio as an Experience
 
-This website is designed as a sample portfolio for a digital artist, not as a final commercial product.
+---
 
-The goal is to demonstrate how:
+## 🚧 Challenges and Debugging
+Building a project that relies so heavily on timing presented unique challenges:
 
-A portfolio can feel cinematic
+1. **The "Race Condition" of Animations**: In early builds, the scramble logic would sometimes finish before the CSS transitions were complete. I had to implement `setTimeout` logic within Vue's lifecycle hooks to ensure that the visual "handshake" between JavaScript and CSS was seamless.
+2. **Audio Synchronization**: Integrating the audio cues required careful handling of browser auto-play policies. I resolved this by tethering the audio start to the initial user click ("ENTER"), ensuring the cinematic experience begins with both sound and vision in sync.
+3. **Single-File Complexity**: To keep the project portable, I chose to keep the code in a single file structure. Organizing over 300 lines of CSS alongside complex JS logic required strict commenting and a modular approach to function naming to prevent the code from becoming unreadable.
 
-Transitions can convey mood
+---
 
-Minimal content can still leave a strong impression
+## 📁 Project Structure
+The repository is organized to highlight the logic-heavy nature of the frontend:
+* **`index.html`**: The semantic skeleton. It includes the Vue mounting point and the layout for the different sequence phases.
+* **`style.css`**: Contains all "cinematic" logic, including custom fonts, keyframe animations, and layout grids.
+* **`app.js`**: The controller. It manages the scramble effects, timing, and the state-switching logic that drives the intro.
 
-Frontend logic can support storytelling
+---
 
-Instead of overwhelming the user with information, the site:
+## 🚀 How to Run
+1. **Clone** this repository to your local machine.
+2. Open `index.html` in a modern web browser (Chrome or Firefox recommended for optimal animation performance).
+3. **Important**: Turn on your volume. The project uses audio cues to complete the cinematic atmosphere.
 
-Introduces itself slowly
+---
 
-Builds anticipation
+## 🎓 Reflection: This was CS50
+This project represents the culmination of my journey through CS50. It took the logical problem-solving skills I learned in C and SQL and applied them to a creative, frontend context. It proves that web development is not just about data and forms; it’s about creating an interface that feels human, flawed, and expressive.
 
-Uses animation to guide attention
+**PROJECT SEV7NSECONDS** is a tribute to the "glitch" in the system—the reminder that behind every screen is a story.
 
-Allows the visuals to breathe
-
-Technologies Used
-
-HTML — Semantic structure and layout
-
-CSS — Styling, transitions, flicker effects, and layout
-
-JavaScript — Timing logic, text scrambling, interaction handling
-
-Vue.js (via CDN) — State management and conditional rendering
-
-Why Vue via CDN?
-
-Vue was included using a CDN instead of a full npm-based setup in order to:
-
-Keep the project lightweight
-
-Avoid build tools and configuration overhead
-
-Make the project easy to run and review
-
-Focus on logic and interaction rather than tooling
-
-This decision also makes the project more accessible to beginners.
-
-Key Features
-Cinematic Intro Sequence
-
-Scrambled text glitch animation for the title
-
-Scrambled glitch animation for the entry button
-
-Subtle flicker effect after resolution
-
-Carefully timed reveals to allow animations to complete
-
-Phase-Based Flow
-
-The site progresses through several phases:
-
-Start Screen – title and button introduction
-
-Intro Sequence – audiovisual transition
-
-Glitch Overlay – brief disruption before entering
-
-Main Interface – portfolio content
-
-Each phase is controlled using Vue’s reactive state.
-
-Text-Based Glitch Effects
-
-Characters scramble and resolve progressively
-
-No RGB color distortion
-
-Focus on motion, timing, and readability
-
-Inspired by cyberpunk UI aesthetics rather than error simulation
-
-Portfolio-Style Navigation
-
-The main interface includes multiple sections such as:
-
-Home
-
-Portfolio
-
-Contact
-
-Each section uses animated transitions and glitch effects to maintain visual consistency.
-
-Project Structure
-
-The entire project exists inside a single HTML file.
-
-This was a deliberate design choice to:
-
-Keep the project portable
-
-Make it easy to open and review
-
-Reduce unnecessary complexity
-
-Highlight logic and animation rather than file structure
-
-Despite being a single file, the code is separated into clear sections:
-
-Markup
-
-Styling
-
-Vue application logic
-
-Reusable animation functions
-
-How It Works
-Vue State Management
-
-Vue controls:
-
-Which phase is currently active
-
-When elements appear or disappear
-
-When animations begin and end
-
-When user interaction is enabled
-
-This makes the UI predictable and avoids manual DOM manipulation wherever possible.
-
-Text Scramble Logic
-
-The glitch effect works by:
-
-Replacing characters with random symbols
-
-Gradually locking correct characters into place
-
-Updating the text at short time intervals
-
-Ending with a subtle flicker animation
-
-This creates the illusion of unstable data resolving into meaning.
-
-How to Run the Project
-
-No installation is required.
-
-Clone or download the repository
-
-Open index.html in a modern browser
-
-Enable audio for the full experience
-
-That’s all.
-
-Educational Value
-
-This project demonstrates:
-
-Frontend animation techniques
-
-JavaScript timing and control flow
-
-Vue conditional rendering
-
-UI state transitions
-
-How design inspiration can shape technical decisions
-
-It also shows how non-traditional websites can still be valid and effective CS50 projects.
-
-Future Improvements
-
-Possible future enhancements include:
-
-Mobile responsiveness
-
-Accessibility options
-
-User-controlled animation toggles
-
-Backend integration for dynamic portfolios
-
-Localization and language support
-
-These were intentionally left out to keep the scope appropriate for CS50.
-
-Final Thoughts
-
-PROJECT SEV7NSECONDS is an exploration of how frontend technologies can be used not just to display content, but to tell a story.
-
-Inspired by cyberpunk aesthetics and designed as a digital artist portfolio, this project focuses on mood, timing, and presence rather than raw complexity.
-
-This was PROJECT SEV7NSECONDS.
-This was CS50.
+**This was PROJECT SEV7NSECONDS. This was CS50.**
